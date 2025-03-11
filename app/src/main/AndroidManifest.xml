@@ -16,6 +16,9 @@
 <!--            android:name=".SplashScreenActivity"-->
 <!--            android:exported="false" />-->
         <activity
+            android:name=".ui.theme.screens.login.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.theme.screens.registration.RegisterActivity"
             android:exported="false" />
         <activity

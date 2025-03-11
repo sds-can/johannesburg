@@ -36,10 +36,12 @@ import kotlinx.coroutines.launch
 import android.content.Intent
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.tooling.preview.Preview
 
 import com.example.johannesburg.R
+import com.example.johannesburg.ui.theme.screens.login.LoginActivity
 
 import com.example.johannesburg.ui.theme.screens.registration.RegisterActivity
 
@@ -57,7 +59,7 @@ class SplashActivity : ComponentActivity() {
 
             SplashScreen {
 
-                startActivity(Intent(this, RegisterActivity::class.java))
+                startActivity(Intent(this, LoginActivity::class.java))
 
                 finish()
 
@@ -114,3 +116,4 @@ fun PreviewSplashScreen() {
     )
 
 }
+

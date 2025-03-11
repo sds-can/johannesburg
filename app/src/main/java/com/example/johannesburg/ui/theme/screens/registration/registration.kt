@@ -1,5 +1,7 @@
 package com.example.johannesburg.ui.theme.screens.registration
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -7,12 +9,10 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -20,11 +20,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.johannesburg.R
 import com.example.johannesburg.ui.theme.ElectricBlue
 import com.example.johannesburg.ui.theme.SoftWhite
-
 
 class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,23 +44,21 @@ fun RegisterScreen() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
+
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFF1E3A8A), Color(0xFF2563EB))
-                )
-            )
-            .padding(16.dp),
+            .background(Color(0xFFF1F2F2))
+            .padding(1.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFF1F2F2), RoundedCornerShape(20.dp))
+                .verticalScroll(rememberScrollState())
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -66,41 +66,56 @@ fun RegisterScreen() {
                 painter = painterResource(id = R.drawable.newlogo),
                 contentDescription = "App Logo",
                 modifier = Modifier
-                    .width(420.dp)
-                    .height(120.dp)
-                    .padding(bottom = 16.dp)
+                    .width(565.dp) // Wider
+                    .height(screenHeight * 0.1f) // Shorter
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             RegistrationTextField("Full Name", name) { name = it }
             RegistrationTextField("Phone Number", phone) { phone = it }
             RegistrationTextField("Email", email) { email = it }
-            PasswordTextField("Password", password, passwordVisible) { password = it }
-            PasswordTextField("Confirm Password", confirmPassword, passwordVisible) { confirmPassword = it }
+            PasswordTextField("Password", password) { password = it }
+            PasswordTextField("Confirm Password", confirmPassword) { confirmPassword = it }
 
             Spacer(modifier = Modifier.height(10.dp))
+            val context = LocalContext.current
 
             Text(
-                "By continuing, you agree to our Terms and Conditions",
+                text = "By continuing, you agree to our ",
                 fontSize = 12.sp,
                 color = Color.Gray,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
             )
+            Text(
+                text = "Terms and Conditions",
+                fontSize = 12.sp,
+                color = ElectricBlue,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yourwebsite.com/terms.pdf"))
+                    context.startActivity(intent)
+                })
+
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
                 onClick = { /* Handle registration logic */ },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = ElectricBlue, contentColor = SoftWhite),
-                shape = RoundedCornerShape(12.dp),
-                elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 8.dp)
+                colors = ButtonDefaults.buttonColors(containerColor = ElectricBlue, contentColor = Color.White),
+                shape = RoundedCornerShape(12.dp)
             ) {
                 Text("Sign Up", fontSize = 18.sp)
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
+            TextButton(
+                onClick = { /* Navigate to login screen */ }
+            ) {
+                Text("Have an account? Login", color = ElectricBlue)
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
             SocialLoginButtons()
         }
     }
@@ -125,8 +140,8 @@ fun RegistrationTextField(label: String, value: String, onValueChange: (String) 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordTextField(label: String, value: String, passwordVisible: Boolean, onValueChange: (String) -> Unit) {
-    var visibility by remember { mutableStateOf(passwordVisible) }
+fun PasswordTextField(label: String, value: String, onValueChange: (String) -> Unit) {
+    var visibility by remember { mutableStateOf(false) }
 
     OutlinedTextField(
         value = value,
@@ -167,15 +182,15 @@ fun SocialLoginButtons() {
             IconButton(
                 onClick = { /* Handle social login */ },
                 modifier = Modifier
-                    .size(60.dp)
-                    .background(Color.White, CircleShape)
+                    .size(50.dp)
+                    .background(Color(0xFFF9FAFB), CircleShape)
                     .border(1.dp, Color.LightGray, CircleShape)
             ) {
                 Icon(
                     painter = painterResource(id = icon),
                     contentDescription = null,
                     tint = Color.Unspecified,
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(24.dp)
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
